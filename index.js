@@ -1,6 +1,7 @@
 import { sendSystemMessage } from '../../../../script.js';
 import { getContext } from '../../../extensions.js';
 import { registerSlashCommand } from '../../../slash-commands.js';
+import { isTrueBoolean } from '../../../utils.js';
 
 
 
@@ -124,8 +125,8 @@ const applyRule = (a, b, rule) => {
         return false;
     }
 };
-const returnContext = (path) => {
-    const context = getContext();
+
+const returnObject = async(context, path, args) => {
     const parts = path.split('::');
     let current = context;
     for (const part of parts) {
@@ -166,8 +167,24 @@ const returnContext = (path) => {
             break;
         }
     }
+    if (isTrueBoolean(args.call)) {
+        try {
+            return JSON.stringify(await current());
+        } catch (ex) {
+            toastr.error(ex.message);
+        }
+    }
     return JSON.stringify(current);
 };
 
-registerSlashCommand('context', (_, value) => returnContext(value), [], '<span class="monospace">key::subkey</span> – Access SillyTavern\'s application context. Use <span class="monospace">/context?</span> for more info. Example: <span class="monospace">/context chatId | /echo</span> or <span class="monospace">/context characters(find name eq {{char}})::personality | /echo</span>', true, true);
+const returnContext = async (args, path) => {
+    const context = getContext();
+    return await returnObject(context, path, args);
+};
+const returnWindow = async (args, path) => {
+    return await returnObject(window, path, args);
+};
+
+registerSlashCommand('context', (args, value) => returnContext(args, value), [], '<span class="monospace">key::subkey</span> – Access SillyTavern\'s application context. Use <span class="monospace">/context?</span> for more info. Example: <span class="monospace">/context chatId | /echo</span> or <span class="monospace">/context characters(find name eq {{char}})::personality | /echo</span>', true, true);
+registerSlashCommand('context-window', (args, value) => returnWindow(args, value), [], '<span class="monospace">key::subkey</span> – Access window. Use <span class="monospace">/context?</span> for more info. Example: <span class="monospace">/context-window innerWidth | /echo</span>', true, true);
 registerSlashCommand('context-help', () => showHelp(), ['context?'], 'get help for the /context slash command', true, true);
