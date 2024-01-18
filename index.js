@@ -9,30 +9,30 @@ import { isTrueBoolean } from '../../../utils.js';
 const showHelp = () => {
     const examples = [
         [
-            '/context chatId | /echo',
+            '/ctx chatId | /echo',
             ' – gets the ID of he active chat',
         ],
         [
-            '/context characters::5::avatar | /echo',
+            '/ctx characters::5::avatar | /echo',
             ' – gets the avatar filename of the character at index 5 (index starts at 0)',
         ],
         [
-            '/context characters(find name eq Alice)::avatar | /echo',
+            '/ctx characters(find name eq Alice)::avatar | /echo',
             ' – gets the avatar filename of the character named Alice',
         ],
         [
-            '/context groupId | /context groups(find id eq {{pipe}})::members | /echo',
+            '/ctx groupId | /ctx groups(find id eq {{pipe}})::members | /echo',
             ' – gets the list of members of the current group (their avatar filenames)',
         ],
         [
-            '/context groupId | /context groups(find id eq {{pipe}})::members::1 | /context characters(find avatar eq {{pipe}})::name |/echo',
+            '/ctx groupId | /ctx groups(find id eq {{pipe}})::members::1 | /ctx characters(find avatar eq {{pipe}})::name |/echo',
             ' – gets the name of the second member of the current group (index starts at 0)',
         ],
     ];
     sendSystemMessage('generic', `
-        <h3>/context</h3>
+        <h3>/ctx</h3>
         <div>
-            /context gives you access to SillyTavern's application context.
+            /ctx gives you access to SillyTavern's application context.
         </div>
         <div>
             Open your browser's dev tools (F12) and type the following to see what data is available.
@@ -48,7 +48,7 @@ const showHelp = () => {
             Use <span class="monospace">::</span> to access child values (items in a list or dictionary).
         </div>
         <div>
-            Example: <span class="monospace">/context characters::10::first_mes | /echo</span>
+            Example: <span class="monospace">/ctx characters::10::first_mes | /echo</span>
         </div>
 
         <hr>
@@ -66,13 +66,13 @@ const showHelp = () => {
             They are all used the same way:
         </div>
         <div>
-            <span class="monospace">/context characters(find name eq Seraphina) | /echo</span>
+            <span class="monospace">/ctx characters(find name eq Seraphina) | /echo</span>
         </div>
         <div>
-            <span class="monospace">/context characters(findIndex name eq Coding Sensei) | /echo</span>
+            <span class="monospace">/ctx characters(findIndex name eq Coding Sensei) | /echo</span>
         </div>
         <div>
-            <span class="monospace">/context characters(filter fav eq true) | /echo</span>
+            <span class="monospace">/ctx characters(filter fav eq true) | /echo</span>
         </div>
         <div>
             Comparison operations for the find and filter functions are as follows:
@@ -93,13 +93,13 @@ const showHelp = () => {
             To extract only one property of a dictionary or object you can use map.
         </div>
         <div>
-            <span class="monospace">/context characters(map name) | /echo</span>
+            <span class="monospace">/ctx characters(map name) | /echo</span>
         </div>
         <div>
             Can be combined with filters.
         </div>
         <div>
-            <span class="monospace">/context characters(filter fav eq true)(map name) | /echo</span>
+            <span class="monospace">/ctx characters(filter fav eq true)(map name) | /echo</span>
         </div>
 
         <hr>
@@ -185,6 +185,6 @@ const returnWindow = async (args, path) => {
     return await returnObject(window, path, args);
 };
 
-registerSlashCommand('context', (args, value) => returnContext(args, value), [], '<span class="monospace">key::subkey</span> – Access SillyTavern\'s application context. Use <span class="monospace">/context?</span> for more info. Example: <span class="monospace">/context chatId | /echo</span> or <span class="monospace">/context characters(find name eq {{char}})::personality | /echo</span>', true, true);
-registerSlashCommand('context-window', (args, value) => returnWindow(args, value), [], '<span class="monospace">key::subkey</span> – Access window. Use <span class="monospace">/context?</span> for more info. Example: <span class="monospace">/context-window innerWidth | /echo</span>', true, true);
-registerSlashCommand('context-help', () => showHelp(), ['context?'], 'get help for the /context slash command', true, true);
+registerSlashCommand('ctx', (args, value) => returnContext(args, value), [], '<span class="monospace">key::subkey</span> – Access SillyTavern\'s application context. Use <span class="monospace">/ctx?</span> for more info. Example: <span class="monospace">/ctx chatId | /echo</span> or <span class="monospace">/ctx characters(find name eq {{char}})::personality | /echo</span>', true, true);
+registerSlashCommand('ctx-window', (args, value) => returnWindow(args, value), [], '<span class="monospace">key::subkey</span> – Access window. Use <span class="monospace">/ctx?</span> for more info. Example: <span class="monospace">/ctx-window innerWidth | /echo</span>', true, true);
+registerSlashCommand('ctx-help', () => showHelp(), ['ctx?'], 'get help for the /ctx slash command', true, true);
